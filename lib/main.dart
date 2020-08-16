@@ -21,9 +21,10 @@ class MyApp extends StatelessWidget {
           iconTheme: IconThemeData(color: Colors.black),
           textTheme: TextTheme(
             headline6: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 20.0),
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 20.0,
+            ),
           ),
         ),
       ),
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
         bottomSheetTheme: BottomSheetThemeData(
           backgroundColor: Colors.grey[900],
         ),
-        appBarTheme: AppBarTheme(color: Colors.black),
+        appBarTheme: AppBarTheme(color: Colors.grey[900]),
         popupMenuTheme: PopupMenuThemeData(color: Colors.black),
         dialogBackgroundColor: Colors.black,
       ),
@@ -65,8 +66,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   scrollDirection: Axis.horizontal,
                   itemCount: 20,
                   itemBuilder: (context, index) {
-                    return StoryWidget();
+                    if (index == 0)
+                      return ProfileStory();
+                    else
+                      return OtherStories();
                   }),
+            ),
+            Divider(
+              color: Colors.grey,
+              thickness: 0.2,
             )
           ],
         ),
@@ -89,6 +97,36 @@ class _StoryWidgetState extends State<StoryWidget> {
 
   @override
   Widget build(BuildContext context) {
+    return GestureDetector(
+      onLongPressStart: (details) {
+        setState(() {
+          radius = 25.0;
+        });
+      },
+      onLongPressEnd: (details) {
+        setState(() {
+          radius = 30.0;
+        });
+      },
+      onTap: () {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => StoryPage()));
+      },
+      child: Container(
+        decoration: ShapeDecoration(shape: CircleBorder()),
+        child: CircleAvatar(
+          backgroundColor: Colors.white,
+          radius: radius,
+          child: Icon(Icons.person),
+        ),
+      ),
+    );
+  }
+}
+
+class OtherStories extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: Container(
@@ -99,29 +137,7 @@ class _StoryWidgetState extends State<StoryWidget> {
           ),
           shape: BoxShape.circle,
         ),
-        child: GestureDetector(
-          onLongPressStart: (details) {
-            setState(() {
-              radius = 25.0;
-            });
-          },
-          onLongPressEnd: (details) {
-            setState(() {
-              radius = 30.0;
-            });
-          },
-          onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => StoryPage()));
-          },
-          child: Container(
-            decoration: ShapeDecoration(shape: CircleBorder()),
-            child: CircleAvatar(
-              radius: radius,
-              child: Icon(Icons.person),
-            ),
-          ),
-        ),
+        child: StoryWidget(),
       ),
     );
   }
@@ -148,5 +164,42 @@ class _StoryPageState extends State<StoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold();
+  }
+}
+
+class ProfileStory extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Center(
+        child: Stack(
+          children: [
+            StoryWidget(),
+            Positioned(
+              right: 0,
+              bottom: 0,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black,
+                  ),
+                  shape: BoxShape.circle,
+                ),
+                child: CircleAvatar(
+                  backgroundColor: Colors.blue[300],
+                  radius: 9.0,
+                  child: Icon(
+                    Icons.add,
+                    size: 15.0,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
