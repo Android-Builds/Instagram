@@ -111,30 +111,69 @@ class _MessagesState extends State<Messages> {
               highlightColor: Colors.transparent,
               onPressed: () {
                 showModalBottomSheet(
-                    context: context,
-                    builder: (context) {
-                      return Wrap(
-                        children: [
-                          ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: accountCount + 1,
-                              itemBuilder: (context, index) {
-                                if (index == accountCount)
-                                  return ListTile(
-                                    title: Text('Add Account'),
-                                  );
-                                else
-                                  return ListTile(
-                                    leading: Icon(
-                                      Icons.account_circle,
-                                      size: 20.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15.0),
+                      topRight: Radius.circular(15.0),
+                    ),
+                  ),
+                  context: context,
+                  builder: (context) {
+                    return Wrap(
+                      children: [
+                        Container(height: 15.0),
+                        Center(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            padding: EdgeInsets.all(10.0),
+                            height: 4,
+                            width: 40,
+                          ),
+                        ),
+                        ListView.builder(
+                          padding: EdgeInsets.all(10.0),
+                          shrinkWrap: true,
+                          itemCount: accountCount + 1,
+                          itemBuilder: (context, index) {
+                            if (index == accountCount)
+                              return ListTile(
+                                contentPadding: EdgeInsets.all(10.0),
+                                leading: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.white,
                                     ),
-                                    title: Text('account1'),
-                                  );
-                              })
-                        ],
-                      );
-                    });
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: CircleAvatar(
+                                    radius: 30.0,
+                                    child: Icon(
+                                      Icons.add,
+                                      size: 30.0,
+                                    ),
+                                  ),
+                                ),
+                                title: Text('Add Account'),
+                              );
+                            else
+                              return ListTile(
+                                contentPadding: EdgeInsets.all(10.0),
+                                leading: Icon(
+                                  Icons.account_circle,
+                                  size: 60.0,
+                                ),
+                                title: Text('account1'),
+                                trailing: Icon(Icons.remove_circle_outline),
+                              );
+                          },
+                        )
+                      ],
+                    );
+                  },
+                );
               },
             )
           ],
