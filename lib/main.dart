@@ -56,6 +56,13 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Instagram'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+              icon: Icon(Icons.send),
+              onPressed: () => Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => Messages())))
+        ],
       ),
       body: Center(
         child: ListView(
@@ -78,6 +85,64 @@ class _MyHomePageState extends State<MyHomePage> {
             )
           ],
         ),
+      ),
+    );
+  }
+}
+
+int accountCount = 1;
+
+class Messages extends StatefulWidget {
+  @override
+  _MessagesState createState() => _MessagesState();
+}
+
+class _MessagesState extends State<Messages> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Row(
+          children: [
+            Text('username'),
+            IconButton(
+              icon: Icon(Icons.arrow_drop_down),
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              onPressed: () {
+                showModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return Wrap(
+                        children: [
+                          ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: accountCount + 1,
+                              itemBuilder: (context, index) {
+                                if (index == accountCount)
+                                  return ListTile(
+                                    title: Text('Add Account'),
+                                  );
+                                else
+                                  return ListTile(
+                                    leading: Icon(
+                                      Icons.account_circle,
+                                      size: 20.0,
+                                    ),
+                                    title: Text('account1'),
+                                  );
+                              })
+                        ],
+                      );
+                    });
+              },
+            )
+          ],
+        ),
+        actions: [
+          IconButton(icon: Icon(Icons.videocam), onPressed: null),
+          IconButton(icon: Icon(Icons.note_add), onPressed: null),
+        ],
       ),
     );
   }
