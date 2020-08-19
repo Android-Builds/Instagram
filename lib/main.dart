@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:instagram/widgets/storywidget.dart';
 
 void main() {
   runApp(MyApp());
@@ -187,47 +188,6 @@ class _MessagesState extends State<Messages> {
   }
 }
 
-class StoryWidget extends StatefulWidget {
-  const StoryWidget({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  _StoryWidgetState createState() => _StoryWidgetState();
-}
-
-class _StoryWidgetState extends State<StoryWidget> {
-  double radius = 30.0;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onLongPressStart: (details) {
-        setState(() {
-          radius = 25.0;
-        });
-      },
-      onLongPressEnd: (details) {
-        setState(() {
-          radius = 30.0;
-        });
-      },
-      onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => StoryPage()));
-      },
-      child: Container(
-        decoration: ShapeDecoration(shape: CircleBorder()),
-        child: CircleAvatar(
-          backgroundColor: Colors.white,
-          radius: radius,
-          child: Icon(Icons.person),
-        ),
-      ),
-    );
-  }
-}
-
 class OtherStories extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -244,30 +204,6 @@ class OtherStories extends StatelessWidget {
         child: StoryWidget(),
       ),
     );
-  }
-}
-
-class StoryPage extends StatefulWidget {
-  @override
-  _StoryPageState createState() => _StoryPageState();
-}
-
-class _StoryPageState extends State<StoryPage> {
-  @override
-  void initState() {
-    super.initState();
-    Timer(Duration(seconds: 5), () {
-      Navigator.pop(context);
-    });
-  }
-
-  exit() {
-    Navigator.pop(context);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold();
   }
 }
 
