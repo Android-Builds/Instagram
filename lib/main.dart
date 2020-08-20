@@ -79,7 +79,14 @@ class Feed extends StatefulWidget {
   _FeedState createState() => _FeedState();
 }
 
+int storyLength = 40;
+int storyPages = int.parse((storyLength / 6).toStringAsFixed(0));
+PageController _storycontroller = PageController(
+  initialPage: 0,
+);
+
 class _FeedState extends State<Feed> {
+  int counter = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,15 +115,48 @@ class _FeedState extends State<Feed> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10.0),
               height: MediaQuery.of(context).size.height * 0.3,
-              child: GridView.count(
-                scrollDirection: Axis.horizontal,
-                crossAxisCount: 2,
-                children: List.generate(20, (index) {
-                  if (index == 0)
-                    return ProfileStory();
-                  else
-                    return OtherStories();
-                }),
+              child: PageView(
+                controller: _storycontroller,
+                children: List.generate(
+                  storyPages,
+                  (index) {
+                    return Container(
+                      child: GridView.count(
+                        scrollDirection: Axis.horizontal,
+                        crossAxisCount: 2,
+                        children: List.generate(
+                          int.parse(((storyLength - counter) / 6)
+                                      .toStringAsFixed(0)) >
+                                  1
+                              ? 6
+                              : int.parse(((storyLength - counter) % 6)
+                                  .toStringAsFixed(0)),
+                          (index) {
+                            if (counter == 0) {
+                              counter++;
+                              return Column(
+                                children: [
+                                  ProfileStory(),
+                                  Spacer(),
+                                  Text('Main Profile'),
+                                ],
+                              );
+                            } else {
+                              counter++;
+                              return Column(
+                                children: [
+                                  OtherStories(),
+                                  Spacer(),
+                                  Text('Profile $counter'),
+                                ],
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
             Divider(
@@ -258,32 +298,25 @@ class OtherStories extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          UnconstrainedBox(
-            child: Container(
-              padding: EdgeInsets.all(2.0),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomLeft,
-                  colors: [
-                    Colors.pink[900],
-                    Colors.red,
-                    Colors.orange,
-                    Colors.yellowAccent[700],
-                  ], // whitish to gray
-                  tileMode:
-                      TileMode.clamp, // repeats the gradient over the canvas
-                ),
-                shape: BoxShape.circle,
-              ),
-              child: StoryWidget(),
+      child: UnconstrainedBox(
+        child: Container(
+          padding: EdgeInsets.all(2.0),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomLeft,
+              colors: [
+                Colors.pink[900],
+                Colors.red,
+                Colors.orange,
+                Colors.yellowAccent[700],
+              ], // whitish to gray
+              tileMode: TileMode.clamp, // repeats the gradient over the canvas
             ),
+            shape: BoxShape.circle,
           ),
-          Spacer(),
-          Text('profile'),
-        ],
+          child: StoryWidget(),
+        ),
       ),
     );
   }
@@ -294,39 +327,33 @@ class ProfileStory extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          Center(
-            child: Stack(
-              children: [
-                StoryWidget(),
-                Positioned(
-                  right: 0,
-                  bottom: 0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black,
-                      ),
-                      shape: BoxShape.circle,
-                    ),
-                    child: CircleAvatar(
-                      backgroundColor: Colors.blue[300],
-                      radius: 9.0,
-                      child: Icon(
-                        Icons.add,
-                        size: 15.0,
-                        color: Colors.white,
-                      ),
-                    ),
+      child: Center(
+        child: Stack(
+          children: [
+            StoryWidget(),
+            Positioned(
+              right: 0,
+              bottom: 0,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black,
+                  ),
+                  shape: BoxShape.circle,
+                ),
+                child: CircleAvatar(
+                  backgroundColor: Colors.blue[300],
+                  radius: 9.0,
+                  child: Icon(
+                    Icons.add,
+                    size: 15.0,
+                    color: Colors.white,
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-          Spacer(),
-          Text('my profile'),
-        ],
+          ],
+        ),
       ),
     );
   }
