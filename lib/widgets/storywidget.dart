@@ -31,8 +31,9 @@ class _StoryWidgetState extends State<StoryWidget> {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => StoryPage()));
       },
-      child: Container(
-        decoration: ShapeDecoration(shape: CircleBorder()),
+      child: CircleAvatar(
+        radius: radius + 2.0,
+        backgroundColor: Colors.black,
         child: CircleAvatar(
           backgroundColor: Colors.white,
           radius: radius,

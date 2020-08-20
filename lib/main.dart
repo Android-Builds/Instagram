@@ -255,10 +255,18 @@ class OtherStories extends StatelessWidget {
       padding: EdgeInsets.all(8.0),
       child: UnconstrainedBox(
         child: Container(
-          padding: EdgeInsets.all(3.0),
+          padding: EdgeInsets.all(2.0),
           decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.blue,
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomLeft,
+              colors: [
+                Colors.pink[900],
+                Colors.red,
+                Colors.orange,
+                Colors.yellowAccent[700],
+              ], // whitish to gray
+              tileMode: TileMode.clamp, // repeats the gradient over the canvas
             ),
             shape: BoxShape.circle,
           ),
