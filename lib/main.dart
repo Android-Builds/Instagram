@@ -40,18 +40,46 @@ class MyApp extends StatelessWidget {
         popupMenuTheme: PopupMenuThemeData(color: Colors.black),
         dialogBackgroundColor: Colors.black,
       ),
-      home: MyHomePage(),
+      home: HomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key}) : super(key: key);
+class HomePage extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+PageController _controller = PageController(
+  initialPage: 0,
+);
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PageView(
+      controller: _controller,
+      children: [
+        Feed(),
+        Messages(),
+      ],
+    );
+  }
+}
+
+class Feed extends StatefulWidget {
+  Feed({Key key}) : super(key: key);
+  @override
+  _FeedState createState() => _FeedState();
+}
+
+class _FeedState extends State<Feed> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,9 +88,13 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
         actions: [
           IconButton(
-              icon: Icon(Icons.send),
-              onPressed: () => Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Messages())))
+            icon: Icon(Icons.send),
+            onPressed: () => _controller.animateTo(
+              MediaQuery.of(context).size.width,
+              duration: Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            ),
+          )
         ],
       ),
       body: Center(
@@ -91,6 +123,24 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+Route _createRoute() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => Messages(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      var begin = Offset(1.0, 0.0);
+      var end = Offset.zero;
+      var curve = Curves.ease;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
+}
+
 int accountCount = 1;
 
 class Messages extends StatefulWidget {
@@ -103,6 +153,14 @@ class _MessagesState extends State<Messages> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => _controller.animateTo(
+            0.0,
+            duration: Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          ),
+        ),
         title: Row(
           children: [
             Text('username'),
