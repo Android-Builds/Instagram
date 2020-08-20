@@ -84,9 +84,14 @@ class _FeedState extends State<Feed> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Instagram'),
+        leading: IconButton(icon: Icon(Icons.camera_alt), onPressed: () {}),
+        title: Text(
+          'Instagram',
+          style: TextStyle(fontFamily: 'Billabong', fontSize: 30.0),
+        ),
         centerTitle: true,
         actions: [
+          IconButton(icon: Icon(Icons.search), onPressed: () {}),
           IconButton(
             icon: Icon(Icons.send),
             onPressed: () => _controller.animateTo(
@@ -94,7 +99,7 @@ class _FeedState extends State<Feed> {
               duration: Duration(milliseconds: 500),
               curve: Curves.easeInOut,
             ),
-          )
+          ),
         ],
       ),
       body: Center(
@@ -253,25 +258,32 @@ class OtherStories extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(8.0),
-      child: UnconstrainedBox(
-        child: Container(
-          padding: EdgeInsets.all(2.0),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomLeft,
-              colors: [
-                Colors.pink[900],
-                Colors.red,
-                Colors.orange,
-                Colors.yellowAccent[700],
-              ], // whitish to gray
-              tileMode: TileMode.clamp, // repeats the gradient over the canvas
+      child: Column(
+        children: [
+          UnconstrainedBox(
+            child: Container(
+              padding: EdgeInsets.all(2.0),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomLeft,
+                  colors: [
+                    Colors.pink[900],
+                    Colors.red,
+                    Colors.orange,
+                    Colors.yellowAccent[700],
+                  ], // whitish to gray
+                  tileMode:
+                      TileMode.clamp, // repeats the gradient over the canvas
+                ),
+                shape: BoxShape.circle,
+              ),
+              child: StoryWidget(),
             ),
-            shape: BoxShape.circle,
           ),
-          child: StoryWidget(),
-        ),
+          Spacer(),
+          Text('profile'),
+        ],
       ),
     );
   }
@@ -281,34 +293,40 @@ class ProfileStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Center(
-        child: Stack(
-          children: [
-            StoryWidget(),
-            Positioned(
-              right: 0,
-              bottom: 0,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black,
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Center(
+            child: Stack(
+              children: [
+                StoryWidget(),
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black,
+                      ),
+                      shape: BoxShape.circle,
+                    ),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.blue[300],
+                      radius: 9.0,
+                      child: Icon(
+                        Icons.add,
+                        size: 15.0,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
-                  shape: BoxShape.circle,
                 ),
-                child: CircleAvatar(
-                  backgroundColor: Colors.blue[300],
-                  radius: 9.0,
-                  child: Icon(
-                    Icons.add,
-                    size: 15.0,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+              ],
             ),
-          ],
-        ),
+          ),
+          Spacer(),
+          Text('my profile'),
+        ],
       ),
     );
   }
