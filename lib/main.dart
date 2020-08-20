@@ -101,21 +101,23 @@ class _FeedState extends State<Feed> {
         child: ListView(
           children: [
             Container(
-              height: MediaQuery.of(context).size.height * 0.12,
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 20,
-                  itemBuilder: (context, index) {
-                    if (index == 0)
-                      return ProfileStory();
-                    else
-                      return OtherStories();
-                  }),
+              padding: EdgeInsets.symmetric(horizontal: 10.0),
+              height: MediaQuery.of(context).size.height * 0.3,
+              child: GridView.count(
+                scrollDirection: Axis.horizontal,
+                crossAxisCount: 2,
+                children: List.generate(20, (index) {
+                  if (index == 0)
+                    return ProfileStory();
+                  else
+                    return OtherStories();
+                }),
+              ),
             ),
             Divider(
               color: Colors.grey,
-              thickness: 0.2,
-            )
+              thickness: 0.8,
+            ),
           ],
         ),
       ),
@@ -251,15 +253,17 @@ class OtherStories extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(8.0),
-      child: Container(
-        padding: EdgeInsets.all(2.0),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.blue,
+      child: UnconstrainedBox(
+        child: Container(
+          padding: EdgeInsets.all(3.0),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.blue,
+            ),
+            shape: BoxShape.circle,
           ),
-          shape: BoxShape.circle,
+          child: StoryWidget(),
         ),
-        child: StoryWidget(),
       ),
     );
   }
