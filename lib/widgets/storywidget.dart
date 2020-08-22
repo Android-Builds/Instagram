@@ -12,19 +12,19 @@ class StoryWidget extends StatefulWidget {
 }
 
 class _StoryWidgetState extends State<StoryWidget> {
-  double radius = 35.0;
+  double radius = 32.0;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPressStart: (details) {
         setState(() {
-          radius = 30.0;
+          radius = 28.0;
         });
       },
       onLongPressEnd: (details) {
         setState(() {
-          radius = 35.0;
+          radius = 32.0;
         });
       },
       onTap: () {

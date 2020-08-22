@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:instagram/splash.dart';
+import 'package:instagram/variables.dart';
 import 'package:instagram/widgets/storywidget.dart';
 
 void main() {
@@ -40,7 +43,7 @@ class MyApp extends StatelessWidget {
         popupMenuTheme: PopupMenuThemeData(color: Colors.black),
         dialogBackgroundColor: Colors.black,
       ),
-      home: HomePage(),
+      home: SplashScreen(),
     );
   }
 }
@@ -79,84 +82,96 @@ class Feed extends StatefulWidget {
   _FeedState createState() => _FeedState();
 }
 
-int storyLength = 40;
-int storyPages = int.parse((storyLength / 6).toStringAsFixed(0));
-PageController _storycontroller = PageController(
-  initialPage: 0,
-);
-
 class _FeedState extends State<Feed> {
-  int counter = 0;
+  PageController _storycontroller = PageController(
+    initialPage: 0,
+  );
+
+  static const _kDuration = const Duration(milliseconds: 300);
+
+  static const _kCurve = Curves.ease;
+
+  final _kArrowColor = Colors.black.withOpacity(0.8);
+
+  Future<bool> initializeController() {
+    Completer<bool> completer = new Completer<bool>();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      completer.complete(true);
+    });
+
+    return completer.future;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(icon: Icon(Icons.camera_alt), onPressed: () {}),
-        title: Text(
-          'Instagram',
-          style: TextStyle(fontFamily: 'Billabong', fontSize: 30.0),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(icon: Icon(Icons.search), onPressed: () {}),
-          IconButton(
-            icon: Icon(Icons.send),
-            onPressed: () => _controller.animateTo(
-              MediaQuery.of(context).size.width,
-              duration: Duration(milliseconds: 500),
-              curve: Curves.easeInOut,
-            ),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(50.0),
+        child: AppBar(
+          leading: IconButton(icon: Icon(Icons.camera_alt), onPressed: () {}),
+          title: Text(
+            'Instagram',
+            style: TextStyle(fontFamily: 'Billabong', fontSize: 30.0),
           ),
-        ],
+          centerTitle: true,
+          actions: [
+            IconButton(icon: Icon(Icons.search), onPressed: () {}),
+            IconButton(
+              icon: Icon(Icons.send),
+              onPressed: () => _controller.animateTo(
+                MediaQuery.of(context).size.width,
+                duration: Duration(milliseconds: 500),
+                curve: Curves.easeInOut,
+              ),
+            ),
+          ],
+        ),
       ),
       body: Center(
         child: ListView(
           children: [
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.0),
-              height: MediaQuery.of(context).size.height * 0.3,
-              child: PageView(
-                controller: _storycontroller,
-                children: List.generate(
-                  storyPages,
-                  (index) {
-                    return Container(
-                      child: GridView.count(
-                        scrollDirection: Axis.horizontal,
-                        crossAxisCount: 2,
-                        children: List.generate(
-                          int.parse(((storyLength - counter) / 6)
-                                      .toStringAsFixed(0)) >
-                                  1
-                              ? 6
-                              : int.parse(((storyLength - counter) % 6)
-                                  .toStringAsFixed(0)),
-                          (index) {
-                            if (counter == 0) {
-                              counter++;
-                              return Column(
-                                children: [
-                                  ProfileStory(),
-                                  Spacer(),
-                                  Text('Main Profile'),
-                                ],
-                              );
-                            } else {
-                              counter++;
-                              return Column(
-                                children: [
-                                  OtherStories(),
-                                  Spacer(),
-                                  Text('Profile $counter'),
-                                ],
-                              );
-                            }
+              padding: EdgeInsets.all(1),
+              height: MediaQuery.of(context).size.height * 0.32,
+              child: Stack(
+                children: [
+                  FutureBuilder(
+                    future: initializeController(),
+                    builder: (BuildContext context, AsyncSnapshot<void> snap) {
+                      return PageView(
+                        controller: _storycontroller,
+                        children: children,
+                      );
+                    },
+                  ),
+                  Positioned(
+                    bottom: 0.0,
+                    left: 0.0,
+                    right: 0.0,
+                    child: new Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: new DotsIndicator(
+                          color: Colors.white,
+                          controller: _storycontroller,
+                          itemCount: storyPages,
+                          onPageSelected: (int page) {
+                            _storycontroller.animateToPage(
+                              page,
+                              duration: _kDuration,
+                              curve: _kCurve,
+                            );
                           },
                         ),
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                ],
               ),
             ),
             Divider(
@@ -169,6 +184,12 @@ class _FeedState extends State<Feed> {
     );
   }
 }
+
+// Wrap(
+//                   direction: Axis.horizontal,
+//                   children: List.generate(storyLength, (index) {
+//                     return Text('Hi');
+//                   })),
 
 Route _createRoute() {
   return PageRouteBuilder(
@@ -296,27 +317,24 @@ class _MessagesState extends State<Messages> {
 class OtherStories extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(8.0),
-      child: UnconstrainedBox(
-        child: Container(
-          padding: EdgeInsets.all(2.0),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomLeft,
-              colors: [
-                Colors.pink[900],
-                Colors.red,
-                Colors.orange,
-                Colors.yellowAccent[700],
-              ], // whitish to gray
-              tileMode: TileMode.clamp, // repeats the gradient over the canvas
-            ),
-            shape: BoxShape.circle,
+    return UnconstrainedBox(
+      child: Container(
+        padding: EdgeInsets.all(2.0),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomLeft,
+            colors: [
+              Colors.pink[900],
+              Colors.red,
+              Colors.orange,
+              Colors.yellowAccent[700],
+            ], // whitish to gray
+            tileMode: TileMode.clamp, // repeats the gradient over the canvas
           ),
-          child: StoryWidget(),
+          shape: BoxShape.circle,
         ),
+        child: StoryWidget(),
       ),
     );
   }
@@ -325,36 +343,89 @@ class OtherStories extends StatelessWidget {
 class ProfileStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Center(
-        child: Stack(
-          children: [
-            StoryWidget(),
-            Positioned(
-              right: 0,
-              bottom: 0,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black,
-                  ),
-                  shape: BoxShape.circle,
-                ),
-                child: CircleAvatar(
-                  backgroundColor: Colors.blue[300],
-                  radius: 9.0,
-                  child: Icon(
-                    Icons.add,
-                    size: 15.0,
-                    color: Colors.white,
-                  ),
-                ),
+    return Stack(
+      children: [
+        StoryWidget(),
+        Positioned(
+          right: 0,
+          bottom: 0,
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.black,
+              ),
+              shape: BoxShape.circle,
+            ),
+            child: CircleAvatar(
+              backgroundColor: Colors.blue[300],
+              radius: 9.0,
+              child: Icon(
+                Icons.add,
+                size: 15.0,
+                color: Colors.white,
               ),
             ),
-          ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class DotsIndicator extends AnimatedWidget {
+  DotsIndicator({
+    this.controller,
+    this.itemCount,
+    this.onPageSelected,
+    this.color: Colors.white,
+  }) : super(listenable: controller);
+
+  /// The PageController that this DotsIndicator is representing.
+  final PageController controller;
+
+  final int itemCount;
+
+  final ValueChanged<int> onPageSelected;
+
+  final Color color;
+
+  static const double _kDotSize = 4.0;
+
+  static const double _kMaxZoom = 2.0;
+
+  static const double _kDotSpacing = 20.0;
+
+  Widget _buildDot(int index) {
+    double selectedness = Curves.easeOut.transform(
+      max(
+        0.0,
+        1.0 - ((controller.page ?? controller.initialPage) - index).abs(),
+      ),
+    );
+    double zoom = 1.0 + (_kMaxZoom - 1.0) * selectedness;
+    Color colors = zoom == 2.0 ? Colors.blue : Colors.white;
+    return new Container(
+      width: _kDotSpacing,
+      child: new Center(
+        child: new Material(
+          color: colors,
+          type: MaterialType.circle,
+          child: new Container(
+            width: _kDotSize * zoom,
+            height: _kDotSize * zoom,
+            child: new InkWell(
+              onTap: () => onPageSelected(index),
+            ),
+          ),
         ),
       ),
+    );
+  }
+
+  Widget build(BuildContext context) {
+    return new Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: new List<Widget>.generate(itemCount, _buildDot),
     );
   }
 }
