@@ -71,7 +71,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   getCameras() async {
     WidgetsFlutterBinding.ensureInitialized();
     cameras = await availableCameras();
-    controller = CameraController(cameras[1], ResolutionPreset.medium);
+    controller = CameraController(cameras[1], ResolutionPreset.max);
     controller.initialize().then((_) {
       if (!mounted) {
         return;
@@ -90,27 +90,46 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
 
   /// Display the preview from the camera (or a message if the preview is not available).
   Widget _cameraPreviewWidget() {
+    final size = MediaQuery.of(context).size;
+    final deviceRatio = size.width / size.height;
     if (controller == null || !controller.value.isInitialized) {
       return Container(height: 0);
     }
     return Stack(
       children: [
-        CameraPreview(controller),
+        // Thanks to https://stackoverflow.com/a/56766001/10046550
+        Center(
+          child: Transform.scale(
+            scale: controller.value.aspectRatio / deviceRatio,
+            child: new AspectRatio(
+              aspectRatio: controller.value.aspectRatio,
+              child: new CameraPreview(controller),
+            ),
+          ),
+        ),
         Align(
           alignment: Alignment.bottomCenter,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              GestureDetector(
-                child: CircleAvatar(
-                  radius: 35.0,
-                  backgroundColor: Colors.white,
-                ),
-                onTap: controller != null &&
+              OutlineButton(
+                onPressed: controller != null &&
                         controller.value.isInitialized &&
                         !controller.value.isRecordingVideo
                     ? onTakePictureButtonPressed
                     : null,
+                onLongPress: controller != null &&
+                        controller.value.isInitialized &&
+                        !controller.value.isRecordingVideo
+                    ? onVideoRecordButtonPressed
+                    : null,
+                shape: new CircleBorder(),
+                borderSide: BorderSide(color: Colors.white, width: 3.0),
+                child: Icon(
+                  Icons.brightness_1,
+                  color: Colors.white,
+                  size: 80.0,
+                ),
               ),
               SizedBox(height: 70.0)
             ],

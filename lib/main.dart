@@ -117,8 +117,10 @@ class _FeedState extends State<Feed> {
         child: AppBar(
           leading: IconButton(
               icon: Icon(Icons.camera_alt),
-              onPressed: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => CameraApp()))),
+              onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CameraExampleHome()))),
           title: Text(
             'Instagram',
             style: TextStyle(fontFamily: 'Billabong', fontSize: 30.0),
