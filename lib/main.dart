@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:instagram/camerapage.dart';
-import 'cameraalt.dart';
 import 'package:instagram/splash.dart';
 import 'package:instagram/variables.dart';
 import 'package:instagram/widgets/storywidget.dart';
@@ -71,7 +70,7 @@ class _HomePageState extends State<HomePage> {
     return PageView(
       controller: _controller,
       children: [
-        CameraExampleHome(),
+        CameraPage(),
         Feed(),
         Messages(),
       ],
@@ -146,7 +145,6 @@ class _FeedState extends State<Feed> {
         child: ListView(
           children: [
             Container(
-              padding: EdgeInsets.all(1),
               height: MediaQuery.of(context).size.height * 0.32,
               child: Stack(
                 children: [

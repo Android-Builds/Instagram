@@ -14,7 +14,11 @@ class _SplashScreenState extends State<SplashScreen> {
       storyPages,
       (index) {
         return Container(
-          padding: EdgeInsets.only(top: 10.0),
+          padding: EdgeInsets.only(
+            top: 10.0,
+            left: 30.0,
+            right: 30.0,
+          ),
           child: Wrap(
             alignment: WrapAlignment.center,
             spacing: 30.0,
