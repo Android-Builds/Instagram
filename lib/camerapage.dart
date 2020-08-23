@@ -37,27 +37,71 @@ class _CameraAppState extends State<CameraApp> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(builder: (context, snapshot) {
-      if (controller == null || !controller.value.isInitialized) {
-        return Container();
-      }
-      return AspectRatio(
-          aspectRatio: controller.value.aspectRatio,
-          child: Stack(
-            children: [
-              CameraPreview(controller),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    FloatingActionButton(onPressed: () {}),
-                    SizedBox(height: 50.0)
-                  ],
+    if (controller == null || !controller.value.isInitialized) {
+      return Container();
+    }
+    return AspectRatio(
+      aspectRatio: controller.value.aspectRatio,
+      child: Stack(
+        children: [
+          CameraPreview(controller),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(60),
+                  child: Stack(
+                    children: [
+                      Cutout(
+                        color: Colors.white,
+                        child: Icon(
+                          Icons.brightness_1,
+                          size: 80.0,
+                        ),
+                      ),
+                      Positioned(
+                        left: 5.0,
+                        top: 5.0,
+                        child: Icon(
+                          Icons.brightness_1,
+                          size: 70.0,
+                          color: Colors.white,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              )
-            ],
-          ));
-    });
+                SizedBox(height: 50.0)
+              ],
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
+
+class Cutout extends StatelessWidget {
+  const Cutout({
+    Key key,
+    @required this.color,
+    @required this.child,
+  }) : super(key: key);
+
+  final Color color;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return ShaderMask(
+      blendMode: BlendMode.srcOut,
+      shaderCallback: (bounds) =>
+          LinearGradient(colors: [color], stops: [0.0]).createShader(bounds),
+      child: child,
+    );
+  }
+}
+
+// brightness_1

@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:instagram/camerapage.dart';
+import 'cameraalt.dart';
 import 'package:instagram/splash.dart';
 import 'package:instagram/variables.dart';
 import 'package:instagram/widgets/storywidget.dart';
@@ -189,12 +190,9 @@ class _FeedState extends State<Feed> {
   }
 }
 
-// Wrap(
-//                   direction: Axis.horizontal,
-//                   children: List.generate(storyLength, (index) {
-//                     return Text('Hi');
-//                   })),
+// Transition Animation
 
+/*
 Route _createRoute() {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) => Messages(),
@@ -212,6 +210,7 @@ Route _createRoute() {
     },
   );
 }
+*/
 
 int accountCount = 1;
 
