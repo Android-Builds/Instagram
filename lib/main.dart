@@ -56,7 +56,7 @@ class HomePage extends StatefulWidget {
 }
 
 PageController _controller = PageController(
-  initialPage: 0,
+  initialPage: 1,
 );
 
 class _HomePageState extends State<HomePage> {
@@ -71,6 +71,7 @@ class _HomePageState extends State<HomePage> {
     return PageView(
       controller: _controller,
       children: [
+        CameraExampleHome(),
         Feed(),
         Messages(),
       ],
@@ -116,11 +117,13 @@ class _FeedState extends State<Feed> {
         preferredSize: Size.fromHeight(50.0),
         child: AppBar(
           leading: IconButton(
-              icon: Icon(Icons.camera_alt),
-              onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CameraExampleHome()))),
+            icon: Icon(Icons.camera_alt),
+            onPressed: () => _controller.animateTo(
+              0.0,
+              duration: Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            ),
+          ),
           title: Text(
             'Instagram',
             style: TextStyle(fontFamily: 'Billabong', fontSize: 30.0),
@@ -131,7 +134,7 @@ class _FeedState extends State<Feed> {
             IconButton(
               icon: Icon(Icons.send),
               onPressed: () => _controller.animateTo(
-                MediaQuery.of(context).size.width,
+                MediaQuery.of(context).size.width * 2,
                 duration: Duration(milliseconds: 500),
                 curve: Curves.easeInOut,
               ),
@@ -229,7 +232,7 @@ class _MessagesState extends State<Messages> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () => _controller.animateTo(
-            0.0,
+            MediaQuery.of(context).size.width,
             duration: Duration(milliseconds: 500),
             curve: Curves.easeInOut,
           ),
