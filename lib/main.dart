@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:instagram/camerapage.dart';
 import 'package:instagram/splash.dart';
 import 'package:instagram/variables.dart';
 import 'package:instagram/widgets/storywidget.dart';
@@ -113,7 +114,10 @@ class _FeedState extends State<Feed> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(50.0),
         child: AppBar(
-          leading: IconButton(icon: Icon(Icons.camera_alt), onPressed: () {}),
+          leading: IconButton(
+              icon: Icon(Icons.camera_alt),
+              onPressed: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CameraApp()))),
           title: Text(
             'Instagram',
             style: TextStyle(fontFamily: 'Billabong', fontSize: 30.0),
