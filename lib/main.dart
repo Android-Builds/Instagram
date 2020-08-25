@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:instagram/camerapage.dart';
 import 'package:instagram/splash.dart';
 import 'package:instagram/variables.dart';
@@ -68,6 +69,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return PageView(
+      physics: physics,
       controller: _controller,
       children: [
         CameraPage(),
@@ -107,86 +109,90 @@ class _FeedState extends State<Feed> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(50.0),
-        child: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.camera_alt),
-            onPressed: () => _controller.animateTo(
-              0.0,
-              duration: Duration(milliseconds: 500),
-              curve: Curves.easeInOut,
-            ),
-          ),
-          title: Text(
-            'Instagram',
-            style: TextStyle(fontFamily: 'Billabong', fontSize: 30.0),
-          ),
-          centerTitle: true,
-          actions: [
-            IconButton(icon: Icon(Icons.search), onPressed: () {}),
-            IconButton(
-              icon: Icon(Icons.send),
+    return SafeArea(
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(50.0),
+          child: AppBar(
+            leading: IconButton(
+              icon: Icon(Icons.camera_alt),
               onPressed: () => _controller.animateTo(
-                MediaQuery.of(context).size.width * 2,
+                0.0,
                 duration: Duration(milliseconds: 500),
                 curve: Curves.easeInOut,
               ),
             ),
-          ],
+            title: Text(
+              'Instagram',
+              style: TextStyle(fontFamily: 'Billabong', fontSize: 30.0),
+            ),
+            centerTitle: true,
+            actions: [
+              IconButton(icon: Icon(Icons.search), onPressed: () {}),
+              IconButton(
+                icon: Icon(Icons.send),
+                onPressed: () => _controller.animateTo(
+                  MediaQuery.of(context).size.width * 2,
+                  duration: Duration(milliseconds: 500),
+                  curve: Curves.easeInOut,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-      body: Center(
-        child: ListView(
-          children: [
-            Container(
-              height: MediaQuery.of(context).size.height * 0.32,
-              child: Stack(
-                children: [
-                  FutureBuilder(
-                    future: initializeController(),
-                    builder: (BuildContext context, AsyncSnapshot<void> snap) {
-                      return PageView(
-                        controller: _storycontroller,
-                        children: children,
-                      );
-                    },
-                  ),
-                  Positioned(
-                    bottom: 0.0,
-                    left: 0.0,
-                    right: 0.0,
-                    child: new Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: new DotsIndicator(
-                          color: Colors.white,
+        body: Center(
+          child: ListView(
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height * 0.32,
+                child: Stack(
+                  children: [
+                    FutureBuilder(
+                      future: initializeController(),
+                      builder:
+                          (BuildContext context, AsyncSnapshot<void> snap) {
+                        return PageView(
                           controller: _storycontroller,
-                          itemCount: storyPages,
-                          onPageSelected: (int page) {
-                            _storycontroller.animateToPage(
-                              page,
-                              duration: _kDuration,
-                              curve: _kCurve,
-                            );
-                          },
+                          children: children,
+                        );
+                      },
+                    ),
+                    Positioned(
+                      bottom: 0.0,
+                      left: 0.0,
+                      right: 0.0,
+                      child: new Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: new DotsIndicator(
+                            color: Colors.white,
+                            controller: _storycontroller,
+                            itemCount: storyPages,
+                            onPageSelected: (int page) {
+                              _storycontroller.animateToPage(
+                                page,
+                                duration: _kDuration,
+                                curve: _kCurve,
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Divider(
-              color: Colors.grey,
-              thickness: 0.8,
-            ),
-          ],
+              Divider(
+                color: Colors.grey,
+                thickness: 0.8,
+              ),
+            ],
+          ),
         ),
       ),
     );

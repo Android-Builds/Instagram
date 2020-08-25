@@ -8,3 +8,5 @@ int storyPages = (storyLength % 6) == 0
     : int.parse((storyLength / 6).toStringAsFixed(0)) + 1;
 
 List<Widget> children;
+
+ScrollPhysics physics = ClampingScrollPhysics();
